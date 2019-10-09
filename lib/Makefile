@@ -1,0 +1,29 @@
+##
+# Copyright (c) 2009 Ma Can <ml.macana@gmail.com>
+#                           <macan@ncic.ac.cn>
+#
+# Time-stamp: <2019-08-19 17:52:23 macan>
+#
+# This is the makefile for GK project.
+#
+# Armed with EMACS.
+
+include ../Makefile.inc
+
+all : gk_lib
+
+%.o : %.c 
+	@$(ECHO) -e " " CC"\t" $@
+	@$(CC) $(CFLAGS) -c $(patsubst %.c, $(LIB_PATH)/%.c, $<)
+
+gk_lib : $(LIB_AR_SOURCE:.c=.o)
+	@$(ECHO) -e " " AR"\t" $@
+	@$(AR) rcs libgk.a $(^:.c=.o)
+	@$(ECHO) -e " " SL"\t" $(LIB_SO)
+	@$(CC) -shared -Wl,-soname,libgk.so.1 -o $(LIB_PATH)/libgk.so.1.0 $(^:.c=.o) -lc -lrt -lpthread
+
+clean : 
+	-@rm -rf $(LIB_AR_SOURCE:.c=.o)
+	-@rm -rf libgk.a libgk.so.1.0 libmds.so.1.0 \
+			libmdsl.so.1.0 libxnet.so.1.0 libr2.so.1.0 \
+			libapi.so.1.0 libbranch.so.1.0
